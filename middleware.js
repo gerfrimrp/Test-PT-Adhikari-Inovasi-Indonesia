@@ -1,6 +1,5 @@
 const { verifyToken } = require("./helpers/jwt");
 
-
 const auth = (req, res, next) => {
     const token = req.header('Authorization').split(' ')[1];
     if (!token) {
