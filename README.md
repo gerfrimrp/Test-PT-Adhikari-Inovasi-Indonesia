@@ -14,6 +14,9 @@
     ```
 - **Response**:
     - **201 Created**: Success, user registered.
+    - **400 Bad Request**: Missing required fields or invalid email format.
+    - **400 Bad Request**: Email already exists.
+    - **500 Internal Server Error**: Server error.
 
 ### 2. Log in a user
 - **Endpoint**: `POST /users/login`
@@ -27,49 +30,93 @@
 - **Response**:
     - **200 OK**: Success, returns a JWT token and user information.
     - **400 Bad Request**: Invalid email or password.
+    - **500 Internal Server Error**: Server error.
 
 ---
 
-## Posts
+## Enrollment
 
-### 1. Get all posts
-- **Endpoint**: `GET /posts`
-- **Headers**: `Authorization: Bearer <your_token>`
-- **Response**:
-    - **200 OK**: Returns a list of posts.
-
-### 2. Create a new post
-- **Endpoint**: `POST /posts/create`
+### 1. Add a course for a user
+- **Endpoint**: `POST /enrollment`
 - **Request Body**:
     ```json
     {
-      "title": "My first post",
-      "content": "This is the content of the post"
+      "user_id": 1,
+      "course_id": 101
     }
     ```
 - **Headers**: `Authorization: Bearer <your_token>`
 - **Response**:
-    - **201 Created**: Success, returns the created post.
+    - **201 Created**: Success, course added to the user's enrollment.
+    - **400 Bad Request**: User is already enrolled in this course.
+    - **500 Internal Server Error**: Server error.
 
-### 3. Update a post
-- **Endpoint**: `PUT /posts/update/{id}`
+### 2. Get all enrollments for a user
+- **Endpoint**: `GET /enrollment/:user_id`
+- **Response**:
+    - **200 OK**: Returns the list of courses the user is enrolled in.
+    - **500 Internal Server Error**: Server error.
+
+### 3. Remove a course for a user
+- **Endpoint**: `DELETE /enrollment`
 - **Request Body**:
     ```json
     {
-      "title": "Updated title",
-      "content": "Updated content"
+      "user_id": 1,
+      "course_id": 101
     }
     ```
 - **Headers**: `Authorization: Bearer <your_token>`
 - **Response**:
-    - **200 OK**: Success, returns the updated post.
-    - **400 Bad Request**: Post not found or unauthorized.
+    - **200 OK**: Success, course removed from the user's enrollment.
+    - **400 Bad Request**: User is not enrolled in the course.
+    - **500 Internal Server Error**: Server error.
 
-### 4. Delete a post
-- **Endpoint**: `DELETE /posts/delete/{id}`
+### 4. Update the enrollment status for a user
+- **Endpoint**: `PUT /enrollment`
+- **Request Body**:
+    ```json
+    {
+      "user_id": 1,
+      "course_id": 101,
+      "status": "in-progress"
+    }
+    ```
 - **Headers**: `Authorization: Bearer <your_token>`
 - **Response**:
-    - **200 OK**: Success, returns the deleted post.
-    - **400 Bad Request**: Post not found or unauthorized.
+    - **200 OK**: Success, the enrollment status updated successfully.
+    - **400 Bad Request**: Invalid status value or enrollment not found.
+    - **500 Internal Server Error**: Server error.
+
+---
+
+## Courses
+
+### 1. Get all courses
+- **Endpoint**: `GET /`
+- **Response**:
+    - **200 OK**: Returns a list of all available courses.
+
+    Example Response:
+    ```json
+    [
+        {
+            "course_id": 1,
+            "title": "Introduction to Programming",
+            "description": "Learn the basics of programming using Python.",
+            "course_type": "Programming",
+            "instructor_name": "John Doe",
+            "course_date": "2025-03-31T17:00:00.000Z"
+        },
+        {
+            "course_id": 2,
+            "title": "Creative Marketing Strategies",
+            "description": "A course on innovative approaches to marketing using creativity.",
+            "course_type": "Marketing",
+            "instructor_name": "Jane Smith",
+            "course_date": "2025-05-14T17:00:00.000Z"
+        }
+    ]
+    ```
 
 ---
