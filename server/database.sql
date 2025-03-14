@@ -7,10 +7,22 @@ CREATE TABLE IF NOT EXISTS "users" (
     password VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS "posts" (
-    post_id SERIAL PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS "courses" (
+    course_id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
-    content TEXT NOT NULL,
+    description TEXT NOT NULL,
+    course_type VARCHAR(255) NOT NULL, 
+    instructor_name VARCHAR(255) NOT NULL, 
+    course_date DATE NOT NULL 
+);
+
+CREATE TABLE IF NOT EXISTS "enrollments" (
+    enrollment_id SERIAL PRIMARY KEY,
     user_id INT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES "users"(user_id)
+    course_id INT NOT NULL,
+    enrollment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(50) DEFAULT 'enrolled', 
+    FOREIGN KEY (user_id) REFERENCES "users"(user_id),
+    FOREIGN KEY (course_id) REFERENCES "courses"(course_id),
+    UNIQUE(user_id, course_id) 
 );
